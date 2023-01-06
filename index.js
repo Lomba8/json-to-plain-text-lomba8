@@ -88,10 +88,10 @@ function toPlainText(data) {
                     output += "\n";
                 }
                 var space = "".repeat(1);
-                if (k.length <= 0) {
-                    var space = "".repeat(0 - k.length);
+                if (k.length <= 20) {
+                    var space = "".repeat(20 - k.length);
                 }
-                output += k.slice(0, -1) + ": " + handler(val).toString().replace(/"/g, "");
+                output += k + handler(val).toString().replace(/"/g, "");
             });
             return output;
         },
