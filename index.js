@@ -25,81 +25,81 @@ var trimWhitespace = require("./lib/helper.js");
 
 // Function to convert JSON to PLAIN TEXT
 function toPlainText(data) {
-  var handlers,
-    indentLevel = "";
-  handlers = {
-    undefined: function () {
-      return "null";
-    },
-    null: function () {
-      return "null";
-    },
-    number: function (x) {
-      return x;
-    },
-    boolean: function (x) {
-      return x ? "true" : "false";
-    },
-    string: function (x) {
-      return JSON.stringify(x);
-    },
-    array: function (x) {
-      var output = "";
-      if (0 === x.length) {
-        output += "[]";
-        return output;
-      }
-      let tempNum = 1;
-      x.forEach(function (y, i) {
-        var handler = handlers[typeOf(y)];
-        if (!handler) {
-          throw new Error("what the crap: " + typeOf(y));
-        }
-        if (typeOf(y) != "object") {
-          if (tempNum == x.length) {
-            output += handler(y, true);
-          } else {
-            output += handler(y, true) + ", ";
-          }
-        } else {
-          output += "\n" + handler(y, true);
-        }
-        tempNum += 1;
-      });
-      return output;
-    },
-    object: function (x, inArray, rootNode) {
-      var output = "";
-      if (0 === Object.keys(x).length) {
-        output += "{}";
-        return output;
-      }
+    var handlers,
+        indentLevel = "";
+    handlers = {
+        undefined: function() {
+            return "null";
+        },
+        null: function() {
+            return "null";
+        },
+        number: function(x) {
+            return x;
+        },
+        boolean: function(x) {
+            return x ? "true" : "false";
+        },
+        string: function(x) {
+            return JSON.stringify(x);
+        },
+        array: function(x) {
+            var output = "";
+            if (0 === x.length) {
+                output += "[]";
+                return output;
+            }
+            let tempNum = 1;
+            x.forEach(function(y, i) {
+                var handler = handlers[typeOf(y)];
+                if (!handler) {
+                    throw new Error("what the crap: " + typeOf(y));
+                }
+                if (typeOf(y) != "object") {
+                    if (tempNum == x.length) {
+                        output += handler(y, true);
+                    } else {
+                        output += handler(y, true) + ", ";
+                    }
+                } else {
+                    output += "\n" + handler(y, true);
+                }
+                tempNum += 1;
+            });
+            return output;
+        },
+        object: function(x, inArray, rootNode) {
+            var output = "";
+            if (0 === Object.keys(x).length) {
+                output += "{}";
+                return output;
+            }
 
-      Object.keys(x).forEach(function (k, i) {
-        var val = x[k],
-          handler = handlers[typeOf(val)];
-        if ("undefined" === typeof val) {
-          return;
-        }
-        if (!handler) {
-          throw new Error("what the crap: " + typeOf(val));
-        }
-        if (!(inArray && i === 0)) {
-          output += "\n";
-        }
-        var space = " ".repeat(1);
-        if (k.length <= 20) {
-          var space = " ".repeat(20 - k.length);
-        }
-        output += k + space + ": " + handler(val).toString().replace(/"/g, "");
-      });
-      return output;
-    },
-    function: function () {
-      return "[object Function]";
-    },
-  };
-  return trimWhitespace(handlers[typeOf(data)](data, true, true) + "\n");
+            Object.keys(x).forEach(function(k, i) {
+                var val = x[k],
+                    handler = handlers[typeOf(val)];
+                if ("undefined" === typeof val) {
+                    return;
+                }
+                if (!handler) {
+                    throw new Error("what the crap: " + typeOf(val));
+                }
+                if (!(inArray && i === 0)) {
+                    output += "\n";
+                }
+                var space = "".repeat(1);
+                if (k.length <= 0) {
+                    var space = "".repeat(0 - k.length);
+                }
+                output += k.slice(0, -1) + ": " + handler(val).toString().replace(/"/g, "");
+            });
+            return output;
+        },
+        function: function() {
+            return "[object Function]";
+        },
+    };
+    return trimWhitespace(handlers[typeOf(data)](data, true, true) + "\n");
 }
 
 module.exports.toPlainText = toPlainText;
